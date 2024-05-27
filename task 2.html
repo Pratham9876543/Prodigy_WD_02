@@ -1,0 +1,81 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    #display {
+      font-size: 36px;
+    }
+    #lapTimes {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="display">00:00:00</div>
+    <button id="startStop" onclick="startStop()">Start</button>
+    <button id="reset" onclick="reset()">Reset</button>
+    <button id="lap" onclick="lap()">Lap</button>
+    <ul id="lapTimes"></ul>
+  </div>
+
+  <script>
+    let startTime;
+    let elapsedTime = 0;
+    let timerInterval;
+    let isRunning = false;
+
+    function startStop() {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        document.getElementById("startStop").innerHTML = "Start";
+      } else {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateTime, 10);
+        document.getElementById("startStop").innerHTML = "Stop";
+      }
+      isRunning = !isRunning;
+    }
+
+    function updateTime() {
+      const currentTime = Date.now();
+      elapsedTime = currentTime - startTime;
+      displayTime(elapsedTime);
+    }
+
+    function displayTime(time) {
+      const formattedTime = new Date(time).toISOString().substr(11, 8);
+      document.getElementById("display").innerHTML = formattedTime;
+    }
+
+    function reset() {
+      clearInterval(timerInterval);
+      elapsedTime = 0;
+      displayTime(elapsedTime);
+      document.getElementById("startStop").innerHTML = "Start";
+      isRunning = false;
+      document.getElementById("lapTimes").innerHTML = "";
+    }
+
+    function lap() {
+      const lapTime = elapsedTime;
+      const formattedLapTime = new Date(lapTime).toISOString().substr(11, 8);
+      const lapList = document.getElementById("lapTimes");
+      const lapItem = document.createElement("li");
+      lapItem.textContent = formattedLapTime;
+      lapList.appendChild(lapItem);
+    }
+  </script>
+</body>
+</html>
